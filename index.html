@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex,nofollow">
+<title>🌾 あろ×みほ 就農ロードマップ</title>
+<style>
+  :root{
+    --bg:#f7f4ee; --card:#ffffff; --ink:#2c2a26; --sub:#7a746a;
+    --line:#e7e1d6; --shadow:0 1px 3px rgba(60,50,30,.08);
+    --review:#c8922e; --review-bg:#fdf6e7;
+    --prog:#3f8f5b;   --prog-bg:#eaf5ee;
+    --done:#6b7a86;   --done-bg:#eef1f3;
+    --chip:#efeae0; --chip-on:#3f8f5b;
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;line-height:1.5}
+  .wrap{max-width:1080px;margin:0 auto;padding:20px 16px 60px}
+  header h1{font-size:22px;margin:0 0 4px}
+  header .lead{color:var(--sub);font-size:14px;margin:0 0 14px}
+  .about{background:#fff;border:1px solid var(--line);border-radius:10px;
+    padding:10px 13px;font-size:12.5px;color:var(--sub);margin-bottom:16px}
+  .about b{color:var(--ink)}
+
+  /* filters */
+  .filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
+  .seg{display:inline-flex;background:var(--chip);border-radius:8px;padding:3px}
+  .seg button{border:0;background:transparent;padding:6px 12px;border-radius:6px;
+    font-size:13px;color:var(--sub);cursor:pointer}
+  .seg button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow);font-weight:600}
+  .tags{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0 18px}
+  .tag{border:1px solid var(--line);background:#fff;color:var(--sub);
+    padding:4px 10px;border-radius:999px;font-size:12px;cursor:pointer;user-select:none}
+  .tag.on{background:var(--chip-on);border-color:var(--chip-on);color:#fff}
+  .tag .n{opacity:.6;font-size:11px;margin-left:3px}
+
+  /* board */
+  .board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+  .col{background:transparent}
+  .col h2{font-size:13px;letter-spacing:.02em;margin:0 0 10px;
+    display:flex;align-items:center;gap:8px}
+  .col h2 .dot{width:9px;height:9px;border-radius:50%}
+  .col h2 .cnt{margin-left:auto;font-size:12px;color:var(--sub);font-weight:400}
+  .review .dot{background:var(--review)} .prog .dot{background:var(--prog)} .done .dot{background:var(--done)}
+
+  .card{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--line);
+    border-radius:10px;padding:11px 12px;margin-bottom:10px;box-shadow:var(--shadow)}
+  .review .card{border-left-color:var(--review)}
+  .prog .card{border-left-color:var(--prog)}
+  .done .card{border-left-color:var(--done)}
+  .card .top{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-bottom:5px}
+  .card .axis{font-size:14px}
+  .card .ct{font-size:11px;color:var(--prog);font-weight:600}
+  .card .date{margin-left:auto;font-size:11px;color:var(--sub)}
+  .card .ttl{font-weight:600;font-size:14.5px;margin:1px 0 3px}
+  .card .desc{font-size:12.5px;color:var(--sub)}
+  .empty{color:#b7b0a4;font-size:12px;padding:8px 2px}
+
+  footer{margin-top:26px;color:#b7b0a4;font-size:11px;text-align:center}
+  @media(max-width:720px){
+    .board{grid-template-columns:1fr;gap:20px}
+    header h1{font-size:19px}
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>🌾 あろ×みほ 就農ロードマップ</h1>
+    <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
+    <div class="about">
+      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。
+    </div>
+
+    <div class="filters">
+      <div class="seg" id="axisSeg">
+        <button data-axis="all" class="on">すべて</button>
+        <button data-axis="corps">🎽 隊員活動</button>
+        <button data-axis="farm">🌱 就農後</button>
+      </div>
+    </div>
+    <div class="tags" id="tagBar"></div>
+  </header>
+
+  <div class="board">
+    <section class="col done">
+      <h2><span class="dot"></span>✅ COMPLETED<span class="cnt" id="c-done"></span></h2>
+      <div id="done"></div>
+    </section>
+    <section class="col prog">
+      <h2><span class="dot"></span>🚜 IN PROGRESS<span class="cnt" id="c-prog"></span></h2>
+      <div id="prog"></div>
+    </section>
+    <section class="col review">
+      <h2><span class="dot"></span>🔍 IN REVIEW<span class="cnt" id="c-review"></span></h2>
+      <div id="review"></div>
+    </section>
+  </div>
+
+  <footer>あろ×みほ 就農ロードマップ ／ 最終更新 2026-07-29</footer>
+</div>
+
+<script>
+// ===== ここを足し引きするだけで更新できます =====
+// axis: "corps"(🎽隊員活動) / "farm"(🌱就農後)
+// status: "review" / "prog" / "done"
+// date: doneのときだけ入れる（例 "2026-07-26"）
+const ITEMS = [
+  // ---- COMPLETED（やったこと・日付つき）----
+  {status:"done", axis:"corps", tags:["地域"], title:"体験就農（曽地）",
+    desc:"7/24-26。笹川さん・高橋さん（曽地生産組合）と現地で。棚田・溜池・天水を体感。", date:"2026-07-26"},
+  {status:"done", axis:"corps", tags:["方針"], title:"独立の舞台を曽地に確定",
+    desc:"背骨＝曽地の畑で「米×真菰」を主力に“曽地ブランド”でブランディング。", date:"2026-07-28"},
+
+  // ---- IN PROGRESS（着手・交渉・準備中）----
+  {status:"prog", axis:"corps", tags:["住まい"], title:"曽地貸家の契約・改修",
+    desc:"床張替24畳・断熱＋畳交換・エアコン増設。掃除計画も進行中。"},
+
+  // ---- IN REVIEW（やりたい・種の段階）----
+  {status:"review", axis:"farm", tags:["雪下野菜"], title:"雪下野菜",
+    desc:"みほ発。まずは人参を作りたいところから。柏崎の雪を活かして越冬・糖度アップ。曽地ブランドの一手に。"},
+  {status:"review", axis:"farm", tags:["真菰"], title:"難田を真菰へ",
+    desc:"コンバインの入らない難田は真菰に。景観と水を活かして育てる。"},
+  {status:"review", axis:"farm", tags:["米"], title:"棚田米の受注精米",
+    desc:"棚田米は分づき選択の受注精米で。注文ごとに搗きたてを届ける。"},
+  {status:"review", axis:"farm", tags:["販路"], title:"棚田オーナー制度・ストーリーEC",
+    desc:"曽地生産組合はネット上ほぼゼロ＝伸びしろ大。ふるさと納税・米山プリンセスも視野。"},
+  {status:"review", axis:"farm", tags:["加工"], title:"加工品づくり",
+    desc:"あろのマーケ×みほのデザイン・SNSの出番。"},
+  {status:"review", axis:"farm", tags:["フルーツ"], title:"斜面でフルーツ",
+    desc:"みほの作物。水ラインと棲み分け（難田＝水生／斜面＝フルーツ）。"},
+  {status:"review", axis:"farm", tags:["にんにく"], title:"にんにく",
+    desc:"あろ発。育ててみたい一品。曽地の寒暖差を活かして。"},
+
+  // ---- IN REVIEW（地域貢献・発信系）----
+  {status:"review", axis:"corps", tags:["ブランディング"], title:"棚田の写真パッケージ制作",
+    desc:"曽地の山間部・棚田の景観を写真パッケージ化。組合のブランディング素材の土台に。"},
+  {status:"review", axis:"corps", tags:["広報"], title:"公式インスタグラム始動",
+    desc:"みほが広報担当。曽地生産組合の公式アカウントとして。笹川さんとも相談しながら。"},
+  {status:"review", axis:"corps", tags:["販路"], title:"曽地生産組合 公式HP・販売チャネル",
+    desc:"ネット上ほぼゼロの組合に、公式ホームページと販売チャネルを。あろのWEBマーケを地域へ。"},
+  {status:"review", axis:"corps", tags:["地域"], title:"耕作放棄地の復活",
+    desc:"イノシシの遊び場になりかけた土地を、もう一度田んぼへ。棚田と景観を守り直す。"},
+  {status:"review", axis:"corps", tags:["酒"], title:"冬場の酒米・日本酒ルート",
+    desc:"永見さん（農林水産課）から冬場の酒造の話。農閑期に酒米づくり〜日本酒への展開ルートを開拓する可能性。"},
+];
+// ================================================
+
+const AXIS_ICON = {corps:"🎽", farm:"🌱"};
+let axisFilter = "all";
+let tagFilter = new Set();
+
+function visible(it){
+  if(axisFilter!=="all" && it.axis!==axisFilter) return false;
+  if(tagFilter.size && !it.tags.some(t=>tagFilter.has(t))) return false;
+  return true;
+}
+function cardHTML(it){
+  const ct = it.tags.map(t=>"#"+t).join(" ");
+  const date = it.date ? `<span class="date">${it.date}</span>` : "";
+  return `<div class="card">
+    <div class="top"><span class="axis">${AXIS_ICON[it.axis]}</span>
+      <span class="ct">${ct}</span>${date}</div>
+    <div class="ttl">${it.title}</div>
+    <div class="desc">${it.desc}</div>
+  </div>`;
+}
+function render(){
+  ["review","prog","done"].forEach(s=>{
+    const list = ITEMS.filter(it=>it.status===s && visible(it));
+    const el = document.getElementById(s);
+    el.innerHTML = list.length ? list.map(cardHTML).join("")
+      : `<div class="empty">該当なし</div>`;
+    document.getElementById("c-"+s).textContent = list.length;
+  });
+}
+function buildTags(){
+  const counts = {};
+  ITEMS.forEach(it=>it.tags.forEach(t=>counts[t]=(counts[t]||0)+1));
+  const bar = document.getElementById("tagBar");
+  bar.innerHTML = Object.keys(counts).sort((a,b)=>counts[b]-counts[a]).map(t=>
+    `<span class="tag" data-tag="${t}">#${t}<span class="n">${counts[t]}</span></span>`).join("");
+  bar.querySelectorAll(".tag").forEach(el=>el.onclick=()=>{
+    const t = el.dataset.tag;
+    tagFilter.has(t) ? tagFilter.delete(t) : tagFilter.add(t);
+    el.classList.toggle("on"); render();
+  });
+}
+document.querySelectorAll("#axisSeg button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#axisSeg button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); axisFilter=b.dataset.axis; render();
+});
+buildTags(); render();
+</script>
+</body>
+</html>
