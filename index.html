@@ -58,10 +58,27 @@
   .card .desc{font-size:12.5px;color:var(--sub)}
   .empty{color:#b7b0a4;font-size:12px;padding:8px 2px}
 
+  /* mobile tabs（スマホのみ表示） */
+  .mobile-tabs{display:none;gap:6px;margin-bottom:14px}
+  .mobile-tabs button{flex:1;min-width:0;border:1px solid var(--line);background:#fff;
+    border-radius:9px;padding:7px 2px;cursor:pointer;display:flex;flex-direction:column;
+    align-items:center;gap:1px;color:var(--sub)}
+  .mobile-tabs .b{font-size:14px;font-weight:600}
+  .mobile-tabs .l{font-size:9.5px;letter-spacing:-.02em;white-space:nowrap}
+  .mobile-tabs button.on[data-col="done"]{background:var(--done-bg);border-color:var(--done);color:var(--done)}
+  .mobile-tabs button.on[data-col="prog"]{background:var(--prog-bg);border-color:var(--prog);color:var(--prog)}
+  .mobile-tabs button.on[data-col="review"]{background:var(--review-bg);border-color:var(--review);color:var(--review)}
+
   footer{margin-top:26px;color:#b7b0a4;font-size:11px;text-align:center}
   @media(max-width:720px){
-    .board{grid-template-columns:1fr;gap:20px}
     header h1{font-size:19px}
+    .mobile-tabs{display:flex}
+    .board{grid-template-columns:1fr;gap:0}
+    .board .col{display:none}
+    .board[data-tab="done"] .done,
+    .board[data-tab="prog"] .prog,
+    .board[data-tab="review"] .review{display:block}
+    .col h2 .cnt{display:none}
   }
 </style>
 </head>
@@ -84,7 +101,13 @@
     <div class="tags" id="tagBar"></div>
   </header>
 
-  <div class="board">
+  <div class="mobile-tabs" id="mtabs">
+    <button data-col="done"><span class="b">✅ <span id="mt-done">0</span></span><span class="l">COMPLETED</span></button>
+    <button data-col="prog"><span class="b">🚜 <span id="mt-prog">0</span></span><span class="l">IN PROGRESS</span></button>
+    <button data-col="review" class="on"><span class="b">🔍 <span id="mt-review">0</span></span><span class="l">IN REVIEW</span></button>
+  </div>
+
+  <div class="board" id="board" data-tab="review">
     <section class="col done">
       <h2><span class="dot"></span>✅ COMPLETED<span class="cnt" id="c-done"></span></h2>
       <div id="done"></div>
@@ -174,6 +197,7 @@ function render(){
     el.innerHTML = list.length ? list.map(cardHTML).join("")
       : `<div class="empty">該当なし</div>`;
     document.getElementById("c-"+s).textContent = list.length;
+    const mt=document.getElementById("mt-"+s); if(mt) mt.textContent = list.length;
   });
 }
 function buildTags(){
@@ -191,6 +215,10 @@ function buildTags(){
 document.querySelectorAll("#axisSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#axisSeg button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); axisFilter=b.dataset.axis; render();
+});
+document.querySelectorAll("#mtabs button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#mtabs button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); document.getElementById("board").dataset.tab = b.dataset.col;
 });
 buildTags(); render();
 </script>
