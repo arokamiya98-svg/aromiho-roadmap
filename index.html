@@ -35,6 +35,9 @@
     padding:4px 10px;border-radius:999px;font-size:12px;cursor:pointer;user-select:none}
   .tag.on{background:var(--chip-on);border-color:var(--chip-on);color:#fff}
   .tag .n{opacity:.6;font-size:11px;margin-left:3px}
+  .vtoggle{border:1px solid var(--line);background:#fff;color:var(--sub);
+    padding:6px 13px;border-radius:8px;font-size:13px;cursor:pointer}
+  .vtoggle.on{background:var(--review-bg);border-color:var(--review);color:var(--review);font-weight:600}
 
   /* board */
   .board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -88,7 +91,7 @@
     <h1>🌾 あろ×みほ 就農ロードマップ</h1>
     <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
     <div class="about">
-      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと / <b>🔭</b>＝就農の枠を超えたあろの長期展望。
+      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンで表示ON/OFF＝見たい時だけ開く引き出し）。
     </div>
 
     <div class="filters">
@@ -96,8 +99,8 @@
         <button data-axis="all" class="on">すべて</button>
         <button data-axis="corps">🎽 隊員活動</button>
         <button data-axis="farm">🌱 就農後</button>
-        <button data-axis="vision">🔭 あろ長期展望</button>
       </div>
+      <button id="visionToggle" class="vtoggle" aria-pressed="false">🔭 長期展望</button>
     </div>
     <div class="tags" id="tagBar"></div>
   </header>
@@ -195,9 +198,11 @@ const ITEMS = [
 const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭"};
 let axisFilter = "all";
 let tagFilter = new Set();
+let showVision = false;
 
 function visible(it){
-  if(axisFilter!=="all" && it.axis!==axisFilter) return false;
+  if(it.axis==="vision" && !showVision) return false;
+  if(it.axis!=="vision" && axisFilter!=="all" && it.axis!==axisFilter) return false;
   if(tagFilter.size && !it.tags.some(t=>tagFilter.has(t))) return false;
   return true;
 }
@@ -237,6 +242,12 @@ document.querySelectorAll("#axisSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#axisSeg button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); axisFilter=b.dataset.axis; render();
 });
+document.getElementById("visionToggle").onclick=(e)=>{
+  showVision=!showVision;
+  e.currentTarget.classList.toggle("on", showVision);
+  e.currentTarget.setAttribute("aria-pressed", showVision);
+  render();
+};
 document.querySelectorAll("#mtabs button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#mtabs button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); document.getElementById("board").dataset.tab = b.dataset.col;
