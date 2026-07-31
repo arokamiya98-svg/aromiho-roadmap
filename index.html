@@ -26,7 +26,7 @@
 
   /* filters */
   .filters{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:8px}
-  .seg{display:inline-flex;flex-wrap:wrap;background:var(--chip);border-radius:8px;padding:3px}
+  .seg{display:inline-flex;background:var(--chip);border-radius:8px;padding:3px}
   .seg button{border:0;background:transparent;padding:6px 12px;border-radius:6px;
     font-size:13px;color:var(--sub);cursor:pointer}
   .seg button.on{background:#fff;color:var(--ink);box-shadow:var(--shadow);font-weight:600}
@@ -88,7 +88,7 @@
     <h1>🌾 あろ×みほ 就農ロードマップ</h1>
     <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
     <div class="about">
-      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと / <b>🔭</b>＝就農の枠を超えたあろの長期展望。
+      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。
     </div>
 
     <div class="filters">
@@ -96,7 +96,6 @@
         <button data-axis="all" class="on">すべて</button>
         <button data-axis="corps">🎽 隊員活動</button>
         <button data-axis="farm">🌱 就農後</button>
-        <button data-axis="vision">🔭 あろ長期展望</button>
       </div>
     </div>
     <div class="tags" id="tagBar"></div>
@@ -153,10 +152,6 @@ const ITEMS = [
     desc:"棚田米は分づき選択の受注精米で。注文ごとに搗きたてを届ける。"},
   {status:"review", axis:"farm", tags:["販路"], title:"棚田オーナー制度・ストーリーEC",
     desc:"曽地生産組合はネット上ほぼゼロ＝伸びしろ大。ふるさと納税・米山プリンセスも視野。"},
-  {status:"review", axis:"vision", tags:["販路"], title:"TANADA Direct（契約棚田のLINE直送）",
-    desc:"定期便じゃない。必要な時にLINEで一言→搗きたてを直送。顔の見える契約で、限定◯組だけ。個人にも、飲食店にも。スモールだからできる“人力の贅沢”が強み。"},
-  {status:"review", axis:"vision", tags:["販路","真菰"], title:"飲食店パートナー戦略（米×真菰×ストーリー）",
-    desc:"米で通年の安定取引、真菰は“秋だけの季節食材”で店の目玉に。店には食材でなく“物語”を渡す（棚田POP・産地QR・調理提案）＝店は集客ネタと“こだわり米”のストーリーを、こちらは露出と送客を得る。スモール＆組合の信用で安定供給も約束できる。"},
   {status:"review", axis:"farm", tags:["加工","真菰"], title:"真菰ちまき",
     desc:"ちまきは本来マコモ（真菰）の葉で巻くもの。真菰を丸ごと活かす、曽地だけの餅菓子。真菰ブランド×みほの餅が合流する象徴商品。"},
   {status:"review", axis:"farm", tags:["加工"], title:"おやき",
@@ -169,10 +164,6 @@ const ITEMS = [
     desc:"みほの作物。水ラインと棲み分け（難田＝水生／斜面＝フルーツ）。"},
   {status:"review", axis:"farm", tags:["にんにく"], title:"にんにく",
     desc:"あろ発。育ててみたい一品。曽地の寒暖差を活かして。"},
-  {status:"review", axis:"vision", tags:["農福連携"], title:"農福連携でお兄さんの居場所づくり",
-    desc:"みほの兄（軽度難聴あり）の居場所と仕事を作る＝あろみほが農業に参入する“本当の動機”。生産〜加工の多工程の中で、本人のペースで協力できる範囲を一緒に見つける。国の農福連携（賃金助成・伴走支援）を活用し、法人化で正式雇用の受け皿に。"},
-  {status:"review", axis:"vision", tags:["法人","方針"], title:"法人格で曽地生産組合と農業契約",
-    desc:"個人で従属せず、あろみほの法人が組合の管理地をリース契約で借りる“対等な独立経営体”に（2009年農地法改正で一般法人もリース可）。守り＝組合の機械・補助金・農地、攻め＝屋号で独自販売。お兄さんの正式雇用の器にもなる。"},
 
   // ---- IN REVIEW（地域貢献・発信系）----
   {status:"review", axis:"corps", tags:["ブランディング"], title:"棚田の写真パッケージ制作",
@@ -185,14 +176,12 @@ const ITEMS = [
     desc:"イノシシの遊び場になりかけた土地を、もう一度田んぼへ。棚田と景観を守り直す。"},
   {status:"review", axis:"corps", tags:["酒"], title:"冬場の酒米・日本酒ルート",
     desc:"永見さん（農林水産課）から冬場の酒造の話。農閑期に酒米づくり〜日本酒への展開ルートを開拓する可能性。"},
-  {status:"review", axis:"vision", tags:["方針","地域"], title:"担い手として規模拡大（4町へ）",
-    desc:"3〜6年後の目標。組合を継ぐ担い手フェーズで、組合の機械・体制を土台に米4町（約4ha）規模へ。二人だけの手作業でなく“組合の体制で回す”前提。丁寧ゾーン（直販・米山級）＋組合ルートの二層化で、品質と面積を両立させる。"},
   {status:"review", axis:"corps", tags:["地域","米"], title:"米チャリティー（保育園・子ども食堂へ）",
     desc:"3年目（協力隊期）の目標。協力隊の活動費で苗を購入し、曽地生産組合との“共同寄付”として地元の保育園・子ども食堂などへ米を届ける。自己資金リスクなく地域貢献を形にでき、組合との信頼構築・独立への布石に。次世代とつながる曽地ブランドの芯。"},
 ];
 // ================================================
 
-const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭"};
+const AXIS_ICON = {corps:"🎽", farm:"🌱"};
 let axisFilter = "all";
 let tagFilter = new Set();
 
