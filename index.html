@@ -38,6 +38,7 @@
   .vtoggle{border:1px solid var(--line);background:#fff;color:var(--sub);
     padding:6px 13px;border-radius:8px;font-size:13px;cursor:pointer}
   .vtoggle.on{background:var(--review-bg);border-color:var(--review);color:var(--review);font-weight:600}
+  .seg.dimmed{opacity:.4;pointer-events:none}
 
   /* board */
   .board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -91,7 +92,7 @@
     <h1>🌾 あろ×みほ 就農ロードマップ</h1>
     <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
     <div class="about">
-      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンで表示ON/OFF＝見たい時だけ開く引き出し）。
+      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。
     </div>
 
     <div class="filters">
@@ -201,8 +202,12 @@ let tagFilter = new Set();
 let showVision = false;
 
 function visible(it){
-  if(it.axis==="vision" && !showVision) return false;
-  if(it.axis!=="vision" && axisFilter!=="all" && it.axis!==axisFilter) return false;
+  if(showVision){
+    if(it.axis!=="vision") return false;        // 長期展望モード＝🔭だけ
+  } else {
+    if(it.axis==="vision") return false;        // 通常＝🌱🎽のみ（🔭は隠す）
+    if(axisFilter!=="all" && it.axis!==axisFilter) return false;
+  }
   if(tagFilter.size && !it.tags.some(t=>tagFilter.has(t))) return false;
   return true;
 }
@@ -246,6 +251,7 @@ document.getElementById("visionToggle").onclick=(e)=>{
   showVision=!showVision;
   e.currentTarget.classList.toggle("on", showVision);
   e.currentTarget.setAttribute("aria-pressed", showVision);
+  document.getElementById("axisSeg").classList.toggle("dimmed", showVision);
   render();
 };
 document.querySelectorAll("#mtabs button").forEach(b=>b.onclick=()=>{
