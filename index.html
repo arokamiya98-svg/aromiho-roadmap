@@ -38,6 +38,7 @@
   .vtoggle{border:1px solid var(--line);background:#fff;color:var(--sub);
     padding:6px 13px;border-radius:8px;font-size:13px;cursor:pointer}
   .vtoggle.on{background:var(--review-bg);border-color:var(--review);color:var(--review);font-weight:600}
+  .vtoggle.plan.on{background:var(--prog-bg);border-color:var(--prog);color:var(--prog)}
   .seg.dimmed{opacity:.4;pointer-events:none}
 
   /* board */
@@ -92,7 +93,7 @@
     <h1>🌾 あろ×みほ 就農ロードマップ</h1>
     <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
     <div class="about">
-      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。
+      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。<b>🧭</b>＝協力隊3年の行動戦略（「🧭 行動戦略」ボタンONで切替）。
     </div>
 
     <div class="filters">
@@ -101,7 +102,8 @@
         <button data-axis="corps">🎽 隊員活動</button>
         <button data-axis="farm">🌱 就農後</button>
       </div>
-      <button id="visionToggle" class="vtoggle" aria-pressed="false">🔭 長期展望</button>
+      <button class="vtoggle" data-mode="vision" aria-pressed="false">🔭 長期展望</button>
+      <button class="vtoggle plan" data-mode="plan" aria-pressed="false">🧭 行動戦略</button>
     </div>
     <div class="tags" id="tagBar"></div>
   </header>
@@ -127,7 +129,7 @@
     </section>
   </div>
 
-  <footer>あろ×みほ 就農ロードマップ ／ 最終更新 2026-07-31</footer>
+  <footer>あろ×みほ 就農ロードマップ ／ 最終更新 2026-09-07</footer>
 </div>
 
 <script>
@@ -188,7 +190,7 @@ const ITEMS = [
 
   // ---- IN REVIEW（地域貢献・発信系）----
   {status:"review", axis:"corps", tags:["ブランディング"], title:"棚田の写真パッケージ制作",
-    desc:"曽地の山間部・棚田の景観を写真パッケージ化。組合のブランディング素材の土台に。"},
+    desc:"曽地の山間部・棚田の景観を写真パッケージ化。組合のブランディング素材の土台に。空撮も自前で——棚田は上から撮ってはじめて伝わる。組合の素材も自分たちのパッケージも、自分の手で撮り切る。"},
   {status:"review", axis:"corps", tags:["広報"], title:"公式インスタグラム始動",
     desc:"みほが広報担当。曽地生産組合の公式アカウントとして。笹川さんとも相談しながら。"},
   {status:"review", axis:"corps", tags:["販路"], title:"曽地生産組合 公式HP・販売チャネル",
@@ -196,26 +198,35 @@ const ITEMS = [
   {status:"review", axis:"corps", tags:["地域"], title:"耕作放棄地の復活",
     desc:"イノシシの遊び場になりかけた土地を、もう一度田んぼへ。棚田と景観を守り直す。"},
   {status:"review", axis:"corps", tags:["酒"], title:"冬場の酒米・日本酒ルート",
-    desc:"永見さん（農林水産課）から冬場の酒造の話。農閑期に酒米づくり〜日本酒への展開ルートを開拓する可能性。"},
+    desc:"永見さん（農林水産課）から冬場の酒造の話。そもそも越後杜氏は、冬に仕事のない農民が酒蔵に入ったのが始まり。新しいことを持ち込むのではなく、この土地が続けてきた型に入る。農閑期に酒米づくり〜日本酒への展開ルートを開拓しつつ、発酵の技術と酒蔵とのつながりを同時に得たい。"},
   {status:"review", axis:"vision", tags:["方針","地域"], title:"担い手として規模拡大（4町へ）",
     desc:"3〜6年後の目標。組合を継ぐ担い手フェーズで、組合の機械・体制を土台に米4町（約4ha）規模へ。二人だけの手作業でなく“組合の体制で回す”前提。丁寧ゾーン（直販・米山級）＋組合ルートの二層化で、品質と面積を両立させる。"},
   {status:"review", axis:"vision", tags:["クラファン","販路"], title:"クラファンで抑草ロボ＆乾燥・貯蔵施設",
     desc:"設備投資（自動抑草ロボ／乾燥・貯蔵施設）をクラファンで。リターンは希少な“真菰ダケ”と“棚田オーナー制度”。物語で選ばれる市場でファンを集め、初期投資とファンづくりを同時に。"},
   {status:"review", axis:"corps", tags:["地域","米"], title:"米チャリティー（保育園・子ども食堂へ）",
     desc:"3年目（協力隊期）の目標。協力隊の活動費で苗を購入し、曽地生産組合との“共同寄付”として地元の保育園・子ども食堂などへ米を届ける。自己資金リスクなく地域貢献を形にでき、組合との信頼構築・独立への布石に。次世代とつながる曽地ブランドの芯。"},
+  // ---- 🧭 行動戦略（協力隊3年の動き方・非表示ゾーン）----
+  {status:"review", axis:"plan", tags:["地域","獣害"], title:"わな猟免許を取って獣害対策へ",
+    desc:"イノシシに荒らされた農地を、自分たちの手で守れるように。わな猟免許を取り、地域の獣害対策に加わる。猟期は年に一度きり＝3年でチャンスは3回。1年目の冬から猟友会・実施隊に顔を出し、技術と地域のつながりを一緒に育てていく。"},
+  {status:"review", axis:"plan", tags:["地域","真菰"], title:"排水の悪い田んぼを真菰で活かす",
+    desc:"米にとっての欠陥が、真菰にとっては適地条件になる。排水不良で見放された湿田を、暗渠工事をせずに水を活かしたまま再生する。誰も手を出せなかった田んぼを価値に変える——曽地で真菰をやる理由そのもの。"},
+  {status:"review", axis:"plan", tags:["地域","資格"], title:"重機・農業機械の資格取得",
+    desc:"耕作放棄地の再生も、崩れた畦や詰まった水路の修復も、外注せず自分の手で。車両系建設機械（ユンボ）と大型特殊（農耕車限定）を農閑期に取得する。中通りの中山間地で“土地を直せる担い手”になるための足腰づくり。"},
+  {status:"review", axis:"plan", tags:["地域","加工"], title:"冬の仕事に入る（加工・餅）",
+    desc:"永見さんから聞いた冬の加工の話。雪の半年は農作業が止まるが、この土地では加工と醸造という“もう一つの生業”が動く。米は年に一度しか収入がない——冬の仕事はその構造を支えてきたもの。まず地域の冬仕事に入り、保存・加工の技術と人のつながりを学ぶ。"},
 ];
 // ================================================
 
-const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭"};
+const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭", plan:"🧭"};
 let axisFilter = "all";
 let tagFilter = new Set();
-let showVision = false;
+let hiddenMode = null;   // null | "vision" | "plan"
 
 function visible(it){
-  if(showVision){
-    if(it.axis!=="vision") return false;        // 長期展望モード＝🔭だけ
+  if(hiddenMode){
+    if(it.axis!==hiddenMode) return false;      // 引き出しモード＝その軸だけ
   } else {
-    if(it.axis==="vision") return false;        // 通常＝🌱🎽のみ（🔭は隠す）
+    if(it.axis==="vision"||it.axis==="plan") return false;  // 通常＝🌱🎽のみ
     if(axisFilter!=="all" && it.axis!==axisFilter) return false;
   }
   if(tagFilter.size && !it.tags.some(t=>tagFilter.has(t))) return false;
@@ -257,13 +268,19 @@ document.querySelectorAll("#axisSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#axisSeg button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); axisFilter=b.dataset.axis; render();
 });
-document.getElementById("visionToggle").onclick=(e)=>{
-  showVision=!showVision;
-  e.currentTarget.classList.toggle("on", showVision);
-  e.currentTarget.setAttribute("aria-pressed", showVision);
-  document.getElementById("axisSeg").classList.toggle("dimmed", showVision);
-  render();
-};
+document.querySelectorAll(".vtoggle").forEach(btn=>{
+  btn.onclick=()=>{
+    const m = btn.dataset.mode;
+    hiddenMode = (hiddenMode===m) ? null : m;   // 同じボタン再押しでOFF／別ボタンで乗り換え
+    document.querySelectorAll(".vtoggle").forEach(b=>{
+      const on = (hiddenMode===b.dataset.mode);
+      b.classList.toggle("on", on);
+      b.setAttribute("aria-pressed", on);
+    });
+    document.getElementById("axisSeg").classList.toggle("dimmed", !!hiddenMode);
+    render();
+  };
+});
 document.querySelectorAll("#mtabs button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#mtabs button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); document.getElementById("board").dataset.tab = b.dataset.col;
