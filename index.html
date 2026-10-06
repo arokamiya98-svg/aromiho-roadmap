@@ -41,7 +41,7 @@
   .vtoggle.on{background:var(--review-bg);border-color:var(--review);color:var(--review);font-weight:600}
   .vtoggle.plan.on{background:var(--prog-bg);border-color:var(--prog);color:var(--prog)}
   .vtoggle.neta.on{background:#fbeef3;border-color:#c0567a;color:#c0567a}
-  .seg.dimmed{opacity:.4;pointer-events:none}
+  .seg.dimmed{opacity:.45}
 
   /* board */
   .board{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
@@ -367,21 +367,30 @@ function buildTags(){
     el.classList.toggle("on"); render();
   });
 }
+function setHiddenMode(m){
+  hiddenMode = m;
+  document.querySelectorAll(".vtoggle").forEach(b=>{
+    const on = (hiddenMode===b.dataset.mode);
+    b.classList.toggle("on", on);
+    b.setAttribute("aria-pressed", on);
+  });
+  document.getElementById("axisSeg").classList.toggle("dimmed", !!hiddenMode);
+  document.getElementById("season").classList.toggle("show", hiddenMode==="neta");
+}
 document.querySelectorAll("#axisSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#axisSeg button").forEach(x=>x.classList.remove("on"));
-  b.classList.add("on"); axisFilter=b.dataset.axis; render();
+  b.classList.add("on"); axisFilter=b.dataset.axis;
+  setHiddenMode(null);   // 🔭🧭📸 から通常表示へ戻る
+  if(axisFilter==="all"){  // 「すべて」＝最初に開いた状態（タグ絞り込みも解除）
+    tagFilter.clear();
+    document.querySelectorAll("#tagBar .tag").forEach(t=>t.classList.remove("on"));
+  }
+  render();
 });
 document.querySelectorAll(".vtoggle").forEach(btn=>{
   btn.onclick=()=>{
     const m = btn.dataset.mode;
-    hiddenMode = (hiddenMode===m) ? null : m;   // 同じボタン再押しでOFF／別ボタンで乗り換え
-    document.querySelectorAll(".vtoggle").forEach(b=>{
-      const on = (hiddenMode===b.dataset.mode);
-      b.classList.toggle("on", on);
-      b.setAttribute("aria-pressed", on);
-    });
-    document.getElementById("axisSeg").classList.toggle("dimmed", !!hiddenMode);
-    document.getElementById("season").classList.toggle("show", hiddenMode==="neta");
+    setHiddenMode(hiddenMode===m ? null : m);   // 同じボタン再押しでOFF／別ボタンで乗り換え
     render();
   };
 });
