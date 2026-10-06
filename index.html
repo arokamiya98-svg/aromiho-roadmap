@@ -77,6 +77,28 @@
   .mobile-tabs button.on[data-col="review"]{background:var(--review-bg);border-color:var(--review);color:var(--review)}
 
   footer{margin-top:26px;color:#b7b0a4;font-size:11px;text-align:center}
+  /* 📸 年間スケジュール（インスタネタ時のみ表示） */
+  .season{display:none;margin-top:28px}
+  .season.show{display:block}
+  .season h2{font-size:15px;margin:0 0 4px}
+  .season .note{color:var(--sub);font-size:12px;margin:0 0 10px}
+  .season .legend{display:flex;flex-wrap:wrap;gap:12px;font-size:12px;color:var(--sub);margin:0 0 10px}
+  .season .legend i{display:inline-block;width:14px;height:10px;border-radius:3px;margin-right:4px;vertical-align:middle}
+  .sgrid-wrap{overflow-x:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow)}
+  .sgrid{display:grid;grid-template-columns:150px repeat(12,minmax(34px,1fr));min-width:560px;font-size:12px}
+  .sgrid > div{border-bottom:1px solid var(--line);padding:7px 2px;min-height:34px}
+  .sgrid .h{font-weight:600;color:var(--sub);text-align:center;background:var(--chip)}
+  .sgrid .h.now{background:#c0567a;color:#fff}
+  .sgrid .name{padding-left:10px;font-weight:600;position:sticky;left:0;background:#fff;z-index:1}
+  .sgrid .cell{position:relative}
+  .sgrid .cell.now{background:#fbeef3}
+  .sgrid .bar{position:absolute;left:0;right:0;top:9px;bottom:9px}
+  .sgrid .bar.first{left:3px;border-top-left-radius:5px;border-bottom-left-radius:5px}
+  .sgrid .bar.last{right:3px;border-top-right-radius:5px;border-bottom-right-radius:5px}
+  .t-plant{background:#8cc49e}.t-grow{background:#dcebd9}.t-harvest{background:#c8922e}
+  .t-work{background:#a99ccf}.t-snow{background:#cfdfea}
+  .sgrid .sub{display:block;font-weight:400;color:var(--sub);font-size:11px}
+
   @media(max-width:720px){
     header h1{font-size:19px}
     .mobile-tabs{display:flex}
@@ -133,7 +155,17 @@
     </section>
   </div>
 
-  <footer>あろ×みほ 就農ロードマップ ／ 最終更新 2026-09-07</footer>
+  <section class="season" id="season">
+    <h2>📅 年間スケジュール（収穫物のシーズン）</h2>
+    <p class="note">曽地での目安です。天候や品種で前後します。収穫のタイミングがそのまま投稿のネタどきになります。</p>
+    <div class="legend">
+      <span><i class="t-plant"></i>植付・種まき</span><span><i class="t-grow"></i>育てる</span>
+      <span><i class="t-harvest"></i>収穫</span><span><i class="t-work"></i>加工・作業</span><span><i class="t-snow"></i>雪の季節</span>
+    </div>
+    <div class="sgrid-wrap"><div class="sgrid" id="sgrid"></div></div>
+  </section>
+
+  <footer>あろ×みほ 就農ロードマップ ／ 最終更新 2026-10-07</footer>
 </div>
 
 <script>
@@ -246,12 +278,47 @@ const ITEMS = [
     desc:"稲刈り後の田んぼ、雪の棚田、水を張った春、緑の夏。同じ場所から季節ごとに撮って並べる。空撮も。"},
   {status:"review", axis:"neta", tags:["加工","冬"], title:"冬の手しごと",
     desc:"切り干し大根や乾燥真菰など、雪の季節の加工の様子。農閑期にも動いている曽地の暮らしを伝える。"},
+  {status:"review", axis:"neta", tags:["暮らし","住まい"], title:"空き家のビフォーアフター",
+    desc:"曽地の古民家を、床張替・断熱・畳交換で住める家に。掃除前→作業中→完成を並べて見せる。空き家活用・移住の参考にも。"},
   {status:"review", axis:"neta", tags:["暮らし"], title:"移住者目線の曽地の暮らし",
     desc:"古民家の住まいづくり、はじめての雪かき、地域の行事。外から来た二人だから気づける曽地の魅力。"},
   {status:"review", axis:"neta", tags:["地域","食育"], title:"協力隊の活動レポート",
     desc:"着任式、地域の行事、食育やイベントのお手伝い。顔が見える発信で、地域とのつながりを積み重ねる。"},
 ];
 // ================================================
+
+// ==== 📅 年間スケジュール（インスタネタ タブ下に表示）====
+// type: plant=植付・種まき / grow=育てる / harvest=収穫 / work=加工・作業 / snow=雪
+// from/to は月（1〜12）。年またぎOK（例 from:11,to:5）
+const SEASONS = [
+  {name:"🌾 棚田米", sub:"曽地の棚田", spans:[{from:5,to:5,type:"plant"},{from:6,to:8,type:"grow"},{from:9,to:10,type:"harvest"}]},
+  {name:"🎋 真菰たけ", sub:"三宮畑で実験", spans:[{from:5,to:5,type:"plant"},{from:6,to:8,type:"grow"},{from:9,to:10,type:"harvest"}]},
+  {name:"🧄 にんにく", sub:"", spans:[{from:10,to:10,type:"plant"},{from:11,to:5,type:"grow"},{from:6,to:6,type:"harvest"}]},
+  {name:"🧅 玉ねぎ", sub:"", spans:[{from:10,to:10,type:"plant"},{from:11,to:5,type:"grow"},{from:6,to:6,type:"harvest"}]},
+  {name:"🥬 小松菜・チンゲンサイ", sub:"秋まき・春まき", spans:[{from:10,to:10,type:"plant"},{from:11,to:12,type:"harvest"},{from:4,to:4,type:"plant"},{from:5,to:6,type:"harvest"}]},
+  {name:"🥕 雪下にんじん", sub:"", spans:[{from:7,to:8,type:"plant"},{from:9,to:12,type:"grow"},{from:1,to:3,type:"harvest"}]},
+  {name:"🍠 冬の手しごと", sub:"切り干し大根・乾燥真菰", spans:[{from:11,to:2,type:"work"}]},
+  {name:"❄️ 雪", sub:"", spans:[{from:12,to:3,type:"snow"}]},
+];
+function inSpan(m,sp){ return sp.from<=sp.to ? (m>=sp.from&&m<=sp.to) : (m>=sp.from||m<=sp.to); }
+function renderSeason(){
+  const now = new Date().getMonth()+1;
+  let h = `<div class="h"></div>` + Array.from({length:12},(_,i)=>`<div class="h${i+1===now?" now":""}">${i+1}月</div>`).join("");
+  SEASONS.forEach(r=>{
+    h += `<div class="name">${r.name}${r.sub?`<span class="sub">${r.sub}</span>`:""}</div>`;
+    for(let m=1;m<=12;m++){
+      const sp = r.spans.find(x=>inSpan(m,x));
+      let bar = "";
+      if(sp){
+        const prev = m===1?12:m-1, next = m===12?1:m+1;
+        const first = !inSpan(prev,sp) || m===1, last = !inSpan(next,sp) || m===12;
+        bar = `<span class="bar t-${sp.type}${first?" first":""}${last?" last":""}"></span>`;
+      }
+      h += `<div class="cell${m===now?" now":""}">${bar}</div>`;
+    }
+  });
+  document.getElementById("sgrid").innerHTML = h;
+}
 
 const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭", plan:"🧭", neta:"📸"};
 let axisFilter = "all";
@@ -314,6 +381,7 @@ document.querySelectorAll(".vtoggle").forEach(btn=>{
       b.setAttribute("aria-pressed", on);
     });
     document.getElementById("axisSeg").classList.toggle("dimmed", !!hiddenMode);
+    document.getElementById("season").classList.toggle("show", hiddenMode==="neta");
     render();
   };
 });
@@ -321,7 +389,7 @@ document.querySelectorAll("#mtabs button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#mtabs button").forEach(x=>x.classList.remove("on"));
   b.classList.add("on"); document.getElementById("board").dataset.tab = b.dataset.col;
 });
-buildTags(); render();
+buildTags(); render(); renderSeason();
 </script>
 </body>
 </html>
