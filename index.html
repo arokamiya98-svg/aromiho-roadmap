@@ -19,6 +19,7 @@
     font-family:-apple-system,"Hiragino Sans","Yu Gothic",sans-serif;line-height:1.5}
   .wrap{max-width:1080px;margin:0 auto;padding:20px 16px 60px}
   header h1{font-size:22px;margin:0 0 4px}
+  header .motto{font-size:15px;font-weight:700;color:var(--ink);margin:0 0 12px}
   header .lead{color:var(--sub);font-size:14px;margin:0 0 14px}
   .about{background:#fff;border:1px solid var(--line);border-radius:10px;
     padding:10px 13px;font-size:12.5px;color:var(--sub);margin-bottom:16px}
@@ -92,6 +93,7 @@
   <header>
     <h1>🌾 あろ×みほ 就農ロードマップ</h1>
     <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
+    <p class="motto">柏崎の農業をゼロから学び、米山プリンセスをはじめとした名産を日本・世界へ発信し、次の世代へ繋いでいく。</p>
     <div class="about">
       <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。<b>🧭</b>＝協力隊3年の行動戦略（「🧭 行動戦略」ボタンONで切替）。
     </div>
@@ -143,10 +145,24 @@ const ITEMS = [
     desc:"7/24-26。笹川さん・高橋さん（曽地生産組合）と現地で。棚田・溜池・天水を体感。", date:"2026-07-26"},
   {status:"done", axis:"corps", tags:["方針"], title:"独立の舞台を曽地に確定",
     desc:"背骨＝曽地の畑で「米×真菰」を主力に“曽地ブランド”でブランディング。", date:"2026-07-28"},
+  {status:"done", axis:"corps", tags:["方針"], title:"協力隊 内定",
+    desc:"柏崎市地域おこし協力隊に採用決定。受入は株式会社大日、拠点は曽地。", date:"2026-08-24"},
+  {status:"done", axis:"corps", tags:["住まい"], title:"神戸から曽地へ引越し",
+    desc:"9/15集荷→9/16掃除デー→9/17配達の3日間で、曽地の貸家へ。", date:"2026-09-17"},
+  {status:"done", axis:"corps", tags:["住まい"], title:"入籍・柏崎市へ転入",
+    desc:"夫婦として、曽地の住民に。", date:"2026-10-01"},
+  {status:"done", axis:"corps", tags:["地域"], title:"協力隊 着任",
+    desc:"10/1登庁、10/7着任式。「学び、発信し、次の世代へ繋ぐ」を抱負に3年間がスタート。", date:"2026-10-07"},
 
   // ---- IN PROGRESS（着手・交渉・準備中）----
-  {status:"prog", axis:"corps", tags:["住まい"], title:"曽地貸家の契約・改修",
-    desc:"床張替24畳・断熱＋畳交換・エアコン増設。掃除計画も進行中。"},
+  {status:"prog", axis:"corps", tags:["住まい"], title:"曽地貸家の住まいづくり",
+    desc:"入居済み。床張替24畳・断熱＋畳交換・エアコン増設を少しずつ。"},
+  {status:"prog", axis:"farm", tags:["にんにく"], title:"にんにく植付け",
+    desc:"あろ発。曽地の寒暖差を活かして。10月に植付け、来年初夏の収穫へ。"},
+  {status:"prog", axis:"farm", tags:["畑"], title:"自分たちの畑はじめ",
+    desc:"有機石灰（カキ殻）で土づくり→小松菜・チンゲンサイを不織布で播種。10月下旬に玉ねぎの苗を植える予定。"},
+  {status:"prog", axis:"corps", tags:["広報","販路"], title:"大日インスタの立て直し",
+    desc:"目的は売上拡大。名前欄の見直し（検索対策）から始め、年間の出荷スケジュールから逆算して投稿ロードマップを作る。"},
 
   // ---- IN REVIEW（やりたい・種の段階）----
   {status:"review", axis:"farm", tags:["雪下野菜"], title:"雪下野菜",
@@ -175,8 +191,6 @@ const ITEMS = [
     desc:"あろの海外飲食経験を活かし、曽地米・真菰を最終商品にして移動販売。6次化の最終出口＝付加価値のてっぺん（米1kg→おにぎりで5〜8倍）。動く広告塔＝ブランド体験×直販×地域PR。マルシェ・イベントから小さく始め、加工所・キッチンカーへ。飲食店パートナー戦略のtoC版として、食育・チャリティーとも連動。"},
   {status:"review", axis:"farm", tags:["フルーツ"], title:"斜面でフルーツ",
     desc:"みほの作物。水ラインと棲み分け（難田＝水生／斜面＝フルーツ）。"},
-  {status:"review", axis:"farm", tags:["にんにく"], title:"にんにく",
-    desc:"あろ発。育ててみたい一品。曽地の寒暖差を活かして。"},
   {status:"review", axis:"farm", tags:["食育","体験"], title:"食育×体験＋思い出づくり",
     desc:"子どもの田植え・収穫体験に、プロカメラマンの“成長記録”をセット。毎年同じ棚田で定点撮影＝家族の思い出づくり。体験・食育・発信が一度に回り、宣材写真も貯まる。"},
   {status:"review", axis:"farm", tags:["米","無農薬"], title:"無農薬・自然栽培米の畑",
