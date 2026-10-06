@@ -40,6 +40,7 @@
     padding:6px 13px;border-radius:8px;font-size:13px;cursor:pointer}
   .vtoggle.on{background:var(--review-bg);border-color:var(--review);color:var(--review);font-weight:600}
   .vtoggle.plan.on{background:var(--prog-bg);border-color:var(--prog);color:var(--prog)}
+  .vtoggle.neta.on{background:#fbeef3;border-color:#c0567a;color:#c0567a}
   .seg.dimmed{opacity:.4;pointer-events:none}
 
   /* board */
@@ -95,7 +96,7 @@
     <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
     <p class="motto">柏崎の農業をゼロから学び、米山プリンセスをはじめとした名産を日本・世界へ発信し、次の世代へ繋いでいく。</p>
     <div class="about">
-      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。<b>🧭</b>＝協力隊3年の行動戦略（「🧭 行動戦略」ボタンONで切替）。
+      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。<b>🧭</b>＝協力隊3年の行動戦略（「🧭 行動戦略」ボタンONで切替）。<b>📸</b>＝インスタのネタ帳（「📸 インスタネタ」ボタンONで切替。🔍＝ネタ候補／🚜＝撮影・準備中／✅＝投稿済み）。
     </div>
 
     <div class="filters">
@@ -106,6 +107,7 @@
       </div>
       <button class="vtoggle" data-mode="vision" aria-pressed="false">🔭 長期展望</button>
       <button class="vtoggle plan" data-mode="plan" aria-pressed="false">🧭 行動戦略</button>
+      <button class="vtoggle neta" data-mode="neta" aria-pressed="false">📸 インスタネタ</button>
     </div>
     <div class="tags" id="tagBar"></div>
   </header>
@@ -230,19 +232,37 @@ const ITEMS = [
     desc:"耕作放棄地の再生も、崩れた畦や詰まった水路の修復も、外注せず自分の手で。車両系建設機械（ユンボ）と大型特殊（農耕車限定）を農閑期に取得する。中通りの中山間地で“土地を直せる担い手”になるための足腰づくり。"},
   {status:"review", axis:"plan", tags:["地域","加工"], title:"冬の仕事に入る（加工・餅）",
     desc:"永見さんから聞いた冬の加工の話。雪の半年は農作業が止まるが、この土地では加工と醸造という“もう一つの生業”が動く。米は年に一度しか収入がない——冬の仕事はその構造を支えてきたもの。まず地域の冬仕事に入り、保存・加工の技術と人のつながりを学ぶ。"},
+
+  // ---- 📸 インスタネタ（ネタ帳・非表示ゾーン）🔍候補／🚜撮影・準備中／✅投稿済み ----
+  {status:"review", axis:"neta", tags:["畑","定点"], title:"にんにく成長記録",
+    desc:"10/4の植付けから初夏の収穫まで、同じ場所・同じ角度で定点撮影。芽が出た日、雪の下、収穫の日をシリーズで。"},
+  {status:"review", axis:"neta", tags:["畑"], title:"畑はじめの一週間",
+    desc:"耕して、カキ殻をまいて、種をまく。小松菜・チンゲンサイの芽が出るまでを短い動画に。"},
+  {status:"review", axis:"neta", tags:["畑"], title:"玉ねぎの苗植え",
+    desc:"10月下旬予定。苗の並べ方や植える深さなど、冬を越すための工夫も一緒に。"},
+  {status:"review", axis:"neta", tags:["真菰"], title:"真菰たけ実験圃場のはじまり",
+    desc:"三宮畑での試験栽培を最初から記録。「真菰ってなに？」から伝えて、真菰ブランドの物語の第1話に。"},
+  {status:"review", axis:"neta", tags:["棚田","季節"], title:"曽地の棚田の四季",
+    desc:"稲刈り後の田んぼ、雪の棚田、水を張った春、緑の夏。同じ場所から季節ごとに撮って並べる。空撮も。"},
+  {status:"review", axis:"neta", tags:["加工","冬"], title:"冬の手しごと",
+    desc:"切り干し大根や乾燥真菰など、雪の季節の加工の様子。農閑期にも動いている曽地の暮らしを伝える。"},
+  {status:"review", axis:"neta", tags:["暮らし"], title:"移住者目線の曽地の暮らし",
+    desc:"古民家の住まいづくり、はじめての雪かき、地域の行事。外から来た二人だから気づける曽地の魅力。"},
+  {status:"review", axis:"neta", tags:["地域","食育"], title:"協力隊の活動レポート",
+    desc:"着任式、地域の行事、食育やイベントのお手伝い。顔が見える発信で、地域とのつながりを積み重ねる。"},
 ];
 // ================================================
 
-const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭", plan:"🧭"};
+const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭", plan:"🧭", neta:"📸"};
 let axisFilter = "all";
 let tagFilter = new Set();
-let hiddenMode = null;   // null | "vision" | "plan"
+let hiddenMode = null;   // null | "vision" | "plan" | "neta"
 
 function visible(it){
   if(hiddenMode){
     if(it.axis!==hiddenMode) return false;      // 引き出しモード＝その軸だけ
   } else {
-    if(it.axis==="vision"||it.axis==="plan") return false;  // 通常＝🌱🎽のみ
+    if(it.axis==="vision"||it.axis==="plan"||it.axis==="neta") return false;  // 通常＝🌱🎽のみ
     if(axisFilter!=="all" && it.axis!==axisFilter) return false;
   }
   if(tagFilter.size && !it.tags.some(t=>tagFilter.has(t))) return false;
