@@ -41,6 +41,7 @@
   .vtoggle.on{background:var(--review-bg);border-color:var(--review);color:var(--review);font-weight:600}
   .vtoggle.plan.on{background:var(--prog-bg);border-color:var(--prog);color:var(--prog)}
   .vtoggle.neta.on{background:#fbeef3;border-color:#c0567a;color:#c0567a}
+  .vtoggle.org.on{background:#f3ece4;border-color:#8a6a4a;color:#8a6a4a}
   .seg.dimmed{opacity:.45}
 
   /* board */
@@ -64,6 +65,17 @@
   .card .ttl{font-weight:600;font-size:14.5px;margin:1px 0 3px}
   .card .desc{font-size:12.5px;color:var(--sub)}
   .empty{color:#b7b0a4;font-size:12px;padding:8px 2px}
+  .card .reason{font-size:12px;color:var(--ink);margin-top:6px;padding-top:6px;border-top:1px dashed var(--line)}
+
+  /* 🏘 保留・廃案ゾーン（曽地生産組合モードのみ表示） */
+  .board2{display:none;margin-top:22px;padding-top:16px;border-top:1px dashed #d6cfc2}
+  .board2.show{display:block}
+  .board2 .zone-note{font-size:12px;color:var(--sub);margin:0 0 12px}
+  .board2 .cols{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+  .hold .dot{background:#8a8fb8} .drop .dot{background:#b7b0a4}
+  .hold .card{border-left-color:#8a8fb8;background:#fafaff}
+  .drop .card{border-left-color:#b7b0a4;background:#faf8f5;opacity:.8}
+  .drop .card .ttl{text-decoration:line-through;text-decoration-color:#c9c2b6}
 
   /* mobile tabs（スマホのみ表示） */
   .mobile-tabs{display:none;gap:6px;margin-bottom:14px}
@@ -108,6 +120,7 @@
     .board[data-tab="prog"] .prog,
     .board[data-tab="review"] .review{display:block}
     .col h2 .cnt{display:none}
+    .board2 .cols{grid-template-columns:1fr;gap:0}
   }
 </style>
 </head>
@@ -118,7 +131,7 @@
     <p class="lead">新潟県柏崎市・曽地地域での農業独立プロジェクト。考えていること・進めていること・やったことを、ゆるやかに公開しています。</p>
     <p class="motto">柏崎の農業をゼロから学び、米山プリンセスをはじめとした名産を日本・世界へ発信し、次の世代へ繋いでいく。</p>
     <div class="about">
-      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。<b>🧭</b>＝協力隊3年の行動戦略（「🧭 行動戦略」ボタンONで切替）。<b>📸</b>＝インスタのネタ帳（「📸 インスタネタ」ボタンONで切替。🔍＝ネタ候補／🚜＝撮影・準備中／✅＝投稿済み）。
+      <b>このページについて</b> — 記載の内容は現時点の構想・進行状況であり、実現や時期を確約するものではありません。地域・行政・支援のみなさんに活動が伝わりやすいように、そして後から中通りに来る人の地図になればと思って続けています。凡例：<b>🎽</b>＝協力隊としての活動 / <b>🌱</b>＝就農後にやりたいこと。<b>🔭</b>＝あろの長期戦略（「🔭 長期展望」ボタンONで"長期展望だけ"の表示に切替）。<b>🧭</b>＝協力隊3年の行動戦略（「🧭 行動戦略」ボタンONで切替）。<b>📸</b>＝インスタのネタ帳（「📸 インスタネタ」ボタンONで切替。🔍＝ネタ候補／🚜＝撮影・準備中／✅＝投稿済み）。<b>🏘</b>＝曽地生産組合と一緒にできること（「🏘 曽地生産組合」ボタンONで切替。下に⏸保留・🗑廃案ゾーンつき）。
     </div>
 
     <div class="filters">
@@ -130,6 +143,7 @@
       <button class="vtoggle" data-mode="vision" aria-pressed="false">🔭 長期展望</button>
       <button class="vtoggle plan" data-mode="plan" aria-pressed="false">🧭 行動戦略</button>
       <button class="vtoggle neta" data-mode="neta" aria-pressed="false">📸 インスタネタ</button>
+      <button class="vtoggle org" data-mode="kumiai" aria-pressed="false">🏘 曽地生産組合</button>
     </div>
     <div class="tags" id="tagBar"></div>
   </header>
@@ -155,6 +169,20 @@
     </section>
   </div>
 
+  <div class="board2" id="board2">
+    <p class="zone-note">いまは進めないと決めたもの。理由と一緒に残しておき、状況が変われば上に戻します。</p>
+    <div class="cols">
+      <section class="col hold">
+        <h2><span class="dot"></span>⏸ 保留<span class="cnt" id="c-hold"></span></h2>
+        <div id="hold"></div>
+      </section>
+      <section class="col drop">
+        <h2><span class="dot"></span>🗑 廃案<span class="cnt" id="c-drop"></span></h2>
+        <div id="drop"></div>
+      </section>
+    </div>
+  </div>
+
   <section class="season" id="season">
     <h2>📅 年間スケジュール（収穫物のシーズン）</h2>
     <p class="note">曽地での目安です。天候や品種で前後します。収穫のタイミングがそのまま投稿のネタどきになります。</p>
@@ -165,14 +193,15 @@
     <div class="sgrid-wrap"><div class="sgrid" id="sgrid"></div></div>
   </section>
 
-  <footer>あろ×みほ 就農ロードマップ ／ 最終更新 2026-10-07</footer>
+  <footer>あろ×みほ 就農ロードマップ ／ 最終更新 2026-10-31</footer>
 </div>
 
 <script>
 // ===== ここを足し引きするだけで更新できます =====
-// axis: "corps"(🎽隊員活動) / "farm"(🌱就農後)
-// status: "review" / "prog" / "done"
+// axis: "corps"(🎽隊員活動) / "farm"(🌱就農後) / "kumiai"(🏘曽地生産組合)
+// status: "review" / "prog" / "done" ＋ 🏘のみ "hold"(保留) / "drop"(廃案)
 // date: doneのときだけ入れる（例 "2026-07-26"）
+// reason: hold/dropの理由（任意）／org:true＝🎽🌱のカードを🏘モードにも出す
 const ITEMS = [
   // ---- COMPLETED（やったこと・日付つき）----
   {status:"done", axis:"corps", tags:["地域"], title:"体験就農（曽地）",
@@ -195,12 +224,10 @@ const ITEMS = [
   // ---- IN PROGRESS（着手・交渉・準備中）----
   {status:"prog", axis:"farm", tags:["にんにく"], title:"にんにく植付け",
     desc:"あろ発。曽地の寒暖差を活かして。10/4に植付け、来年初夏の収穫まで。"},
-  {status:"prog", axis:"corps", tags:["広報"], title:"公式インスタグラム始動",
+  {status:"prog", axis:"corps", org:true, tags:["広報"], title:"公式インスタグラム始動",
     desc:"10/6から始動。みほが広報担当。曽地生産組合の公式アカウントとして、笹川さんとも相談しながら。"},
   {status:"prog", axis:"corps", tags:["広報","販路"], title:"大日インスタの立て直し",
     desc:"目的は売上拡大。名前欄の見直し（検索対策）から始め、年間の出荷スケジュールから逆算して投稿ロードマップを作る。まずは旬の真菰で1本出して、反応を見るところから。"},
-  {status:"prog", axis:"corps", tags:["広報","販路"], title:"曽地生産組合 公式HP・販売チャネル",
-    desc:"ネット上ほぼゼロの組合に、公式ホームページと販売チャネルを。インスタと両輪で、計画的に形にしていく。あろのWEBマーケを地域へ。"},
 
   // ---- IN REVIEW（やりたい・種の段階）----
   {status:"review", axis:"farm", tags:["雪下野菜"], title:"雪下野菜",
@@ -255,8 +282,26 @@ const ITEMS = [
     desc:"設備投資（自動抑草ロボ／乾燥・貯蔵施設）をクラファンで。リターンは希少な“真菰ダケ”と“棚田オーナー制度”。物語で選ばれる市場でファンを集め、初期投資とファンづくりを同時に。"},
   {status:"review", axis:"vision", tags:["加工","販路"], title:"冬のゲレンデで曽地米JUNDOG",
     desc:"農閑期の稼ぎ方の一案。北海道ではおなじみのJUNDOG（ご飯でソーセージを包んだライスドッグ）を、曽地米で妙高・湯沢など有名スキー場へ。おにぎりよりボリュームがあって、ランチより安い。片手で食べやすいのでゲレンデにぴったり。“このお米どこの？”から曽地米の入口に。"},
-  {status:"review", axis:"corps", tags:["地域","米"], title:"米チャリティー（保育園・子ども食堂へ）",
+  {status:"review", axis:"corps", org:true, tags:["地域","米"], title:"米チャリティー（保育園・子ども食堂へ）",
     desc:"3年目（協力隊期）の目標。協力隊の活動費で苗を購入し、曽地生産組合との“共同寄付”として地元の保育園・子ども食堂などへ米を届ける。自己資金リスクなく地域貢献を形にでき、組合との信頼構築・独立への布石に。次世代とつながる曽地ブランドの芯。"},
+  // ---- 🏘 曽地生産組合（会議・活動で一緒にできること・非表示ゾーン）----
+  {status:"done", axis:"kumiai", tags:["組合"], title:"組合の役員会にオブザーバー参加",
+    desc:"役員会に同席し、米の売り方について話した。今後もオブザーバーとして参加できることに。組合の現場の声を聞きながら、一緒にできることを探していく。", date:"2026-10-30"},
+  {status:"review", axis:"kumiai", tags:["組合","米","ブランディング"], title:"食味コンクールへの応募",
+    desc:"組合の棚田米で食味コンクールに挑戦。設備投資なしで始められて、結果がそのまま“曽地の米”の看板になる。まずは応募して、いまの米の実力（食味値）を知るところから。"},
+  {status:"hold", axis:"kumiai", tags:["組合","広報"], title:"曽地生産組合 公式HP",
+    desc:"ネット上ほぼゼロの組合に、公式ホームページを。",
+    reason:"市と相談のうえ、いったん保留。発信の体制や状況が整ってから再開する。まずは公式インスタで発信を積み上げる。"},
+  {status:"hold", axis:"kumiai", tags:["組合","販路"], title:"組合の販売チャネル",
+    desc:"組合の米を自分たちの窓口で売るルートづくり。",
+    reason:"米の販路は、卸とのつながりが強さを決める世界。いまは既存のルートを活かし、売り方の勉強と関係づくりを先に。"},
+  {status:"hold", axis:"kumiai", tags:["組合","米"], title:"貯蔵・精米施設",
+    desc:"玄米を低温で保管し、精米・袋詰めまで組合でできるようにする。",
+    reason:"設備に数千万規模の投資が必要。いまの組合の規模では重く、予算の都合で保留。"},
+  {status:"hold", axis:"kumiai", tags:["組合","法人"], title:"販売会社をつくる",
+    desc:"組合の米を売るための販売会社を立ち上げる。",
+    reason:"予算の都合で保留。現状ではそこまでの投資はできない。"},
+
   // ---- 🧭 行動戦略（協力隊3年の動き方・非表示ゾーン）----
   {status:"review", axis:"plan", tags:["地域","獣害"], title:"わな猟免許を取って獣害対策へ",
     desc:"イノシシに荒らされた農地を、自分たちの手で守れるように。わな猟免許を取り、地域の獣害対策に加わる。猟期は年に一度きり＝3年でチャンスは3回。1年目の冬から猟友会・実施隊に顔を出し、技術と地域のつながりを一緒に育てていく。"},
@@ -322,16 +367,18 @@ function renderSeason(){
   document.getElementById("sgrid").innerHTML = h;
 }
 
-const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭", plan:"🧭", neta:"📸"};
+const AXIS_ICON = {corps:"🎽", farm:"🌱", vision:"🔭", plan:"🧭", neta:"📸", kumiai:"🏘"};
+const HIDDEN_AXES = ["vision","plan","neta","kumiai"];
 let axisFilter = "all";
 let tagFilter = new Set();
-let hiddenMode = null;   // null | "vision" | "plan" | "neta"
+let hiddenMode = null;   // null | "vision" | "plan" | "neta" | "kumiai"
 
 function visible(it){
   if(hiddenMode){
-    if(it.axis!==hiddenMode) return false;      // 引き出しモード＝その軸だけ
+    // 引き出しモード＝その軸だけ（🏘は org:true の🎽🌱カードも出す）
+    if(it.axis!==hiddenMode && !(hiddenMode==="kumiai" && it.org)) return false;
   } else {
-    if(it.axis==="vision"||it.axis==="plan"||it.axis==="neta") return false;  // 通常＝🌱🎽のみ
+    if(HIDDEN_AXES.includes(it.axis)) return false;  // 通常＝🌱🎽のみ
     if(axisFilter!=="all" && it.axis!==axisFilter) return false;
   }
   if(tagFilter.size && !it.tags.some(t=>tagFilter.has(t))) return false;
@@ -340,15 +387,16 @@ function visible(it){
 function cardHTML(it){
   const ct = it.tags.map(t=>"#"+t).join(" ");
   const date = it.date ? `<span class="date">${it.date}</span>` : "";
+  const reason = it.reason ? `<div class="reason">理由：${it.reason}</div>` : "";
   return `<div class="card">
     <div class="top"><span class="axis">${AXIS_ICON[it.axis]}</span>
       <span class="ct">${ct}</span>${date}</div>
     <div class="ttl">${it.title}</div>
-    <div class="desc">${it.desc}</div>
+    <div class="desc">${it.desc}</div>${reason}
   </div>`;
 }
 function render(){
-  ["review","prog","done"].forEach(s=>{
+  ["review","prog","done","hold","drop"].forEach(s=>{
     const list = ITEMS.filter(it=>it.status===s && visible(it));
     const el = document.getElementById(s);
     el.innerHTML = list.length ? list.map(cardHTML).join("")
@@ -378,6 +426,7 @@ function setHiddenMode(m){
   });
   document.getElementById("axisSeg").classList.toggle("dimmed", !!hiddenMode);
   document.getElementById("season").classList.toggle("show", hiddenMode==="neta");
+  document.getElementById("board2").classList.toggle("show", hiddenMode==="kumiai");
 }
 document.querySelectorAll("#axisSeg button").forEach(b=>b.onclick=()=>{
   document.querySelectorAll("#axisSeg button").forEach(x=>x.classList.remove("on"));
